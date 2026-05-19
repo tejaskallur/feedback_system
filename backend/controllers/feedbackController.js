@@ -1,22 +1,64 @@
-const Feedback = require('../models/Feedback');
+const Feedback = require("../models/Feedback");
 
-// Controller to handle feedback submission
-exports.submitFeedback = async (req, res) => {
+const submitFeedback = async (req, res) => {
+
   try {
-    const feedback = new Feedback(req.body);
+
+    const {
+      studentName,
+      facultyName,
+      subject,
+      rating,
+      comments,
+    } = req.body;
+
+    const feedback = new Feedback({
+      studentName,
+      facultyName,
+      subject,
+      rating,
+      comments,
+    });
+
     await feedback.save();
-    res.status(201).json({ message: 'Feedback submitted successfully' });
-  } catch (err) {
-    res.status(500).json({ message: 'Error submitting feedback', error: err.message });
+
+    res.status(201).json({
+      message: "Feedback Submitted Successfully",
+    });
+
+  } catch (error) {
+
+    console.log(error);
+
+    res.status(500).json({
+      message: "Server Error",
+    });
+
   }
+
 };
 
-// Controller to fetch all feedbacks for admin dashboard
-exports.getAllFeedbacks = async (req, res) => {
+const getAllFeedbacks = async (req, res) => {
+
   try {
-    const feedbacks = await Feedback.find().sort({ createdAt: -1 });
+
+    const feedbacks = await Feedback.find();
+
     res.status(200).json(feedbacks);
-  } catch (err) {
-    res.status(500).json({ message: 'Failed to fetch feedbacks', error: err.message });
+
+  } catch (error) {
+
+    console.log(error);
+
+    res.status(500).json({
+      message: "Server Error",
+    });
+
   }
+
+};
+
+module.exports = {
+  submitFeedback,
+  getAllFeedbacks,
 };
